@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Camera;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.RectF;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
@@ -73,6 +74,19 @@ public class Practice14FlipboardView extends View {
         int y = centerY - bitmapHeight / 2;
 
         canvas.save();
+        //先绘制上半部分 毕竟上部分在视觉中从未改变
+        canvas.clipRect(new RectF(0, 0, getWidth(), centerY));
+        canvas.drawBitmap(bitmap, x, y, paint);
+        canvas.restore();
+
+
+        canvas.save();
+        if (degree < 90) {//小于90度 视图还在下面 所以裁剪下面
+            canvas.clipRect(new RectF(0, centerY, getWidth(), getHeight()));
+        } else {//大于90 视图在上面了
+            canvas.clipRect(new RectF(0, 0, getWidth(), centerY));
+        }
+
 
         camera.save();
         camera.rotateX(degree);
